@@ -1,0 +1,40 @@
+{
+  "name" : "glueworkshop-lab5-basic-demo",
+  "description" : "",
+  "role" : "arn:aws:iam::933591302813:role/AWSGlueServiceRole-glueworkshop",
+  "executionProperty" : {
+    "maxConcurrentRuns" : 1
+  },
+  "command" : {
+    "name" : "glueetl",
+    "scriptLocation" : "s3://aws-glue-assets-933591302813-us-east-2/scripts/glueworkshop-lab5-basic-demo.py",
+    "pythonVersion" : "3"
+  },
+  "defaultArguments" : {
+    "--class" : "GlueApp",
+    "--enable-metrics" : "true",
+    "--enable-spark-ui" : "true",
+    "--spark-event-logs-path" : "s3://aws-glue-assets-933591302813-us-east-2/sparkHistoryLogs/",
+    "--enable-job-insights" : "true",
+    "--enable-glue-datacatalog" : "true",
+    "--enable-continuous-cloudwatch-log" : "true",
+    "--job-bookmark-option" : "job-bookmark-disable",
+    "--job-language" : "python",
+    "--TempDir" : "s3://aws-glue-assets-933591302813-us-east-2/temporary/"
+  },
+  "maxRetries" : 0,
+  "allocatedCapacity" : 4,
+  "timeout" : 2880,
+  "maxCapacity" : 4.0,
+  "glueVersion" : "3.0",
+  "numberOfWorkers" : 4,
+  "workerType" : "G.1X",
+  "executionClass" : "STANDARD",
+  "codeGenConfigurationNodes" : "{\"node-1663168115965\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"s3://glueworkshop-933591302813-us-east-2/input/lab5/state/states.csv\"},\"Escaper\":\"\",\"Exclusions\":[],\"Name\":\"State Name\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"StateName\",\"Type\":\"string\"},{\"Name\":\"Abbrev\",\"Type\":\"string\"},{\"Name\":\"Code\",\"Type\":\"string\"}]}],\"Paths\":[\"s3://glueworkshop-933591302813-us-east-2/input/lab5/state/states.csv\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-1663168717778\":{\"Aggregate\":{\"Aggs\":[{\"AggFunc\":\"sum\",\"Column\":[\"deathincrease\"]},{\"AggFunc\":\"sum\",\"Column\":[\"hospitalizedincrease\"]}],\"Groups\":[[\"StateName\"]],\"Inputs\":[\"node-1663168467036\"],\"Name\":\"Aggregate\"}},\"node-1663168082149\":{\"ApplyMapping\":{\"Inputs\":[\"node-1663168039548\"],\"Mapping\":[{\"Dropped\":false,\"FromPath\":[\"date\"],\"FromType\":\"string\",\"ToKey\":\"date\",\"ToType\":\"string\"},{\"Dropped\":false,\"FromPath\":[\"state\"],\"FromType\":\"string\",\"ToKey\":\"state\",\"ToType\":\"string\"},{\"Dropped\":false,\"FromPath\":[\"deathincrease\"],\"FromType\":\"double\",\"ToKey\":\"deathincrease\",\"ToType\":\"double\"},{\"Dropped\":false,\"FromPath\":[\"hospitalizedincrease\"],\"FromType\":\"double\",\"ToKey\":\"hospitalizedincrease\",\"ToType\":\"double\"}],\"Name\":\"Apply Mapping\"}},\"node-1663168467036\":{\"Join\":{\"Columns\":[{\"From\":\"node-1663168082149\",\"Keys\":[[\"state\"]]},{\"From\":\"node-1663168115965\",\"Keys\":[[\"Code\"]]}],\"Inputs\":[\"node-1663168082149\",\"node-1663168115965\"],\"JoinType\":\"left\",\"Name\":\"Join\"}},\"node-1663168039548\":{\"Filter\":{\"Filters\":[{\"Negated\":false,\"Operation\":\"REGEX\",\"Values\":[{\"Type\":\"CONSTANT\",\"Value\":[\"NY|CA\"]},{\"Type\":\"COLUMNEXTRACTED\",\"Value\":[\"state\"]}]}],\"Inputs\":[\"node-1663167520041\"],\"LogicalOperator\":\"AND\",\"Name\":\"Filter\"}},\"node-1663167520041\":{\"DropFields\":{\"Inputs\":[\"node-1663167477504\"],\"Name\":\"Drop Fields\",\"Paths\":[[\"pending\"],[\"negative\"],[\"totaltestresultsincrease\"],[\"positive\"],[\"hospitalized\"],[\"death\"],[\"total\"],[\"hash\"],[\"datechecked\"],[\"totaltestresults\"],[\"fips\"],[\"positiveincrease\"],[\"negativeincrease\"]]}},\"node-1663167477504\":{\"CatalogSource\":{\"Database\":\"console-glueworkshop\",\"Name\":\"COVID data\",\"Table\":\"console_json\"}},\"node-1663168762683\":{\"S3DirectTarget\":{\"Compression\":\"none\",\"Format\":\"json\",\"Inputs\":[\"node-1663168717778\"],\"Name\":\"Amazon S3\",\"PartitionKeys\":[],\"Path\":\"s3://glueworkshop-933591302813-us-east-2/output/lab5/basic/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}",
+  "sourceControlDetails" : {
+    "provider" : "GITHUB",
+    "repository" : "glue_cicd_integration",
+    "branch" : "main",
+    "folder" : "glue_studio_basic"
+  }
+}
